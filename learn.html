@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="RE:EARTH Learn — an interactive guide to climate change and environmental sustainability.">
+<title>Learn — RE:EARTH</title>
+<style>
+:root{
+  --ink:#10251d;--green:#183d2d;--green2:#24553c;--lime:#c8ef79;
+  --paper:#f7f5ed;--cream:#e9eadf;--muted:#65746d;--line:rgba(16,37,29,.14);
+  --white:#fff;--orange:#ff6a25
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+a{text-decoration:none;color:inherit}button{font:inherit}
+.header{position:sticky;top:0;z-index:50;height:72px;background:rgba(16,37,29,.96);color:white;display:flex;align-items:center;justify-content:space-between;padding:0 6vw}
+.logo{display:flex;gap:10px;align-items:center;font-size:16px;letter-spacing:.1em}.logo-mark{border:1px solid #fff8;border-radius:50%;height:30px;width:30px;display:grid;place-items:center}.logo b{font-weight:800}
+.nav{display:flex;gap:25px;font-size:11px;text-transform:uppercase;letter-spacing:.1em}.nav a{opacity:.65}.nav a:hover,.nav a.active{opacity:1;color:var(--lime)}
+.menu{display:none;background:none;border:0;color:#fff;font-size:24px}
+.hero{background:var(--green);color:white;padding:105px 8vw 90px;position:relative;overflow:hidden}
+.hero:after{content:"01";position:absolute;right:5vw;bottom:-80px;font-size:330px;line-height:1;font-weight:900;color:#fff05;pointer-events:none}
+.kicker,.label{color:var(--lime);font-size:10px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}
+.hero h1{font-size:clamp(55px,9vw,120px);line-height:.86;letter-spacing:-.06em;margin:20px 0;max-width:900px}.hero h1 em{font-family:Georgia,serif;font-weight:400}
+.hero p{max-width:610px;color:#d9e2dc;font-size:18px}.hero-links{margin-top:32px;display:flex;gap:10px;flex-wrap:wrap}.pill{padding:12px 18px;border-radius:100px;border:1px solid #ffffff33;font-size:12px}.pill.primary{background:var(--lime);color:var(--ink);border-color:var(--lime);font-weight:800}
+.section{padding:100px 8vw}.section.alt{background:var(--cream)}
+.heading{display:grid;grid-template-columns:1fr .7fr;gap:70px;align-items:end;margin-bottom:55px}.heading h2{font-size:clamp(40px,5vw,72px);line-height:.95;letter-spacing:-.05em;margin:10px 0}.heading h2 span{color:#78935d}.heading p{color:var(--muted);max-width:420px}
+.definition{display:grid;grid-template-columns:1fr 1fr;gap:16px}.def-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:34px;min-height:250px}.def-card .big{font-size:50px}.def-card h3{font-size:25px;margin:15px 0 8px}.def-card p{color:var(--muted);margin:0}
+.science{background:var(--paper)}.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:stretch}.flow-step{background:#fff;border:1px solid var(--line);border-radius:17px;padding:22px;position:relative}.flow-step:not(:last-child):after{content:"→";position:absolute;right:-18px;top:45%;z-index:2;font-size:22px;color:#78935d}.num{font-size:10px;color:#78935d;font-weight:800;letter-spacing:.1em}.flow-step h3{font-size:18px;line-height:1.05}.flow-step p{font-size:12px;color:var(--muted)}
+.gas-wrap{margin-top:25px;background:var(--green);color:white;border-radius:25px;padding:40px;display:grid;grid-template-columns:.8fr 1.2fr;gap:60px}.gas-wrap h3{font-size:32px;line-height:1;margin:10px 0}.gas-wrap p{color:#c8d5ce}.gas-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gas{border:1px solid #fff2;border-radius:14px;padding:17px}.gas strong{color:var(--lime);display:block}.gas small{color:#c8d5ce}
+.interactive{background:#102a1f;color:#fff}.interactive .heading p{color:#c5d0c9}.slider-card{background:#173a2b;border:1px solid #ffffff1c;border-radius:24px;padding:30px}.slider-top{display:flex;justify-content:space-between;align-items:center;gap:20px}.temp{font-size:60px;font-weight:800;color:var(--lime);letter-spacing:-.05em}.slider{width:100%;accent-color:var(--lime);cursor:pointer}.scale{display:flex;justify-content:space-between;color:#9fb1a7;font-size:11px}.slider-result{margin-top:22px;padding:20px;background:#ffffff0d;border-radius:15px}.slider-result b{font-size:17px}.slider-result p{color:#bdcbc3;margin:4px 0 0;font-size:13px}
+.impact-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{border:1px solid var(--line);background:#fff;padding:10px 15px;border-radius:100px;cursor:pointer;font-size:12px}.tab.active{background:var(--green);color:#fff;border-color:var(--green)}
+.impact-content{background:#fff;border:1px solid var(--line);border-radius:22px;padding:35px;min-height:250px}.impact-content h3{font-size:32px;margin:0 0 8px}.impact-content p{color:var(--muted);max-width:760px}.impact-points{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:25px}.point{background:var(--cream);padding:18px;border-radius:14px;font-size:13px}.point b{display:block;margin-bottom:4px}
+.myths{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.myth{background:#fff;border:1px solid var(--line);border-radius:17px;padding:0;text-align:left;cursor:pointer;overflow:hidden}.myth-head{display:flex;justify-content:space-between;gap:20px;padding:20px;font-weight:800}.myth-answer{display:none;padding:0 20px 20px;color:var(--muted);font-size:13px}.myth.open .myth-answer{display:block}.myth .symbol{color:var(--orange);font-size:20px}
+.quiz{background:var(--green);color:white}.quiz-box{max-width:850px;margin:auto;background:#fff;color:var(--ink);border-radius:25px;padding:35px}.quiz-meta{font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:#78935d;font-weight:800}.question{font-size:28px;line-height:1.1;margin:13px 0 25px}.answers{display:grid;gap:9px}.answer{border:1px solid var(--line);background:#fafaf6;border-radius:13px;padding:15px;text-align:left;cursor:pointer}.answer:hover{border-color:var(--green)}.answer.correct{background:#dff2c0;border-color:#7ea64f}.answer.wrong{background:#ffe2d7;border-color:#df815e}.quiz-feedback{min-height:26px;margin:15px 0;color:var(--muted);font-size:13px}.next{display:none;background:var(--green);color:#fff;border:0;padding:12px 18px;border-radius:100px;cursor:pointer}.score{display:none;text-align:center;padding:25px}.score strong{font-size:60px;display:block;color:var(--green)}
+.sources{background:#eef0e7}.source-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.source{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}.source b{display:block;margin-bottom:6px}.source p{color:var(--muted);font-size:12px;margin:0 0 12px}.source a{font-size:11px;text-decoration:underline;font-weight:800}
+footer{background:#0c2118;color:#9eafa6;padding:25px 8vw;display:flex;justify-content:space-between;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:850px){.nav{display:none;position:absolute;left:0;right:0;top:72px;background:#10251d;padding:20px 6vw;flex-direction:column}.nav.open{display:flex}.menu{display:block}.heading,.definition,.gas-wrap{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow-step:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-22px}.impact-points,.source-list,.myths{grid-template-columns:1fr}.hero{padding-top:80px}.gas-list{grid-template-columns:1fr}footer{display:block}footer span{display:block;margin:4px 0}}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="logo" href="index.html"><span class="logo-mark">↻</span><span>RE:<b>EARTH</b></span></a>
+  <button class="menu" id="menu">☰</button>
+  <nav class="nav" id="nav">
+    <a href="index.html">Home</a><a class="active" href="#learn">Learn</a><a href="#science">Science</a><a href="#impacts">Impacts</a><a href="#quiz">Quiz</a>
+  </nav>
+</header>
+
+<section class="hero" id="learn">
+  <div class="kicker">RE:EARTH • THE LEARNING HUB</div>
+  <h1>Climate change,<br><em>explained.</em></h1>
+  <p>No complicated jargon. Start with the basics, see how the science connects, test common claims, then check what you remember.</p>
+  <div class="hero-links"><a class="pill primary" href="#basics">Start learning ↓</a><a class="pill" href="#quiz">Take the quiz →</a></div>
+</section>
+
+<section class="section" id="basics">
+  <div class="heading">
+    <div><div class="label">01 / THE BASICS</div><h2>Two ideas.<br><span>Often confused.</span></h2></div>
+    <p>Climate change describes long-term shifts in climate patterns. Global warming is the long-term heating of Earth's surface. They overlap, but they are not identical.</p>
+  </div>
+  <div class="definition">
+    <article class="def-card"><div class="big">🌡</div><h3>Climate change</h3><p>Long-term changes in average weather patterns at local, regional and global scales. It includes changes beyond temperature, such as rainfall, ice, sea level and extremes.</p></article>
+    <article class="def-card"><div class="big">☀</div><h3>Global warming</h3><p>Long-term heating of Earth's surface, driven in the modern era mainly by human activities that increase heat-trapping greenhouse gases.</p></article>
+  </div>
+</section>
+
+<section class="section alt" id="science">
+  <div class="heading">
+    <div><div class="label">02 / THE SCIENCE</div><h2>Follow the<br><span>heat.</span></h2></div>
+    <p>The natural greenhouse effect makes Earth habitable. The problem is the human-driven increase in greenhouse gases, which strengthens heat retention.</p>
+  </div>
+  <div class="flow">
+    <div class="flow-step"><span class="num">01</span><h3>Sunlight arrives</h3><p>Solar energy reaches Earth's surface and atmosphere.</p></div>
+    <div class="flow-step"><span class="num">02</span><h3>Earth warms</h3><p>The surface absorbs energy and emits infrared radiation.</p></div>
+    <div class="flow-step"><span class="num">03</span><h3>Heat meets gases</h3><p>Greenhouse gases absorb and re-radiate some outgoing infrared energy.</p></div>
+    <div class="flow-step"><span class="num">04</span><h3>More GHGs</h3><p>Human activities add gases such as CO₂ and methane to the atmosphere.</p></div>
+    <div class="flow-step"><span class="num">05</span><h3>More warming</h3><p>More heat is retained in the Earth system, shifting climate conditions.</p></div>
+  </div>
+  <div class="gas-wrap">
+    <div><div class="label">THE MAIN PLAYERS</div><h3>Greenhouse gases are not all the same.</h3><p>Different gases have different sources and warming properties. Water vapour is also a greenhouse gas, but it mainly acts as a feedback rather than the initial driver of today's warming.</p></div>
+    <div class="gas-list">
+      <div class="gas"><strong>CO₂</strong><small>Fossil fuels, deforestation and other activities</small></div>
+      <div class="gas"><strong>CH₄</strong><small>Livestock, landfills, wetlands and fossil-fuel systems</small></div>
+      <div class="gas"><strong>N₂O</strong><small>Agriculture, fertilizers and combustion</small></div>
+      <div class="gas"><strong>CFCs</strong><small>Industrial chemicals; many are now controlled under international agreements</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="section interactive">
+  <div class="heading">
+    <div><div class="label">03 / INTERACTIVE</div><h2>Turn up the<br><span>heat.</span></h2></div>
+    <p>Move the slider to explore a simplified warming scenario. This is an educational visualization, not a climate projection.</p>
+  </div>
+  <div class="slider-card">
+    <div class="slider-top"><div><div class="label">SIMULATED CHANGE</div><p style="margin:0;color:#c5d0c9">Compared with a reference climate</p></div><div class="temp" id="temp">+1.0°C</div></div>
+    <input class="slider" id="slider" type="range" min="0" max="4" step=".1" value="1">
+    <div class="scale"><span>0°C</span><span>+1°C</span><span>+2°C</span><span>+3°C</span><span>+4°C</span></div>
+    <div class="slider-result"><b id="slideTitle">Already changing</b><p id="slideText">Even around one degree of warming, climate indicators and extremes are already being observed.</p></div>
+  </div>
+</section>
+
+<section class="section" id="impacts">
+  <div class="heading">
+    <div><div class="label">04 / IMPACTS</div><h2>One change.<br><span>Many systems.</span></h2></div>
+    <p>Climate impacts do not happen in isolation. Explore how changes can interact with ecosystems, water, food, cities and health.</p>
+  </div>
+  <div class="impact-tabs">
+    <button class="tab active" data-impact="ecosystems">🌿 Ecosystems</button>
+    <button class="tab" data-impact="water">💧 Water</button>
+    <button class="tab" data-impact="food">🌾 Food</button>
+    <button class="tab" data-impact="cities">🏙 Cities</button>
+    <button class="tab" data-impact="health">♡ Health</button>
+  </div>
+  <div class="impact-content">
+    <h3 id="impactTitle">Ecosystems</h3><p id="impactDesc">Warming and changing climate conditions can alter habitats, species ranges and the timing of ecological events. Multiple stresses can compound pressure on biodiversity.</p>
+    <div class="impact-points" id="impactPoints"></div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="heading">
+    <div><div class="label">05 / MYTH OR FACT</div><h2>Tap it.<br><span>Check it.</span></h2></div>
+    <p>Good climate communication starts with evidence. Tap each statement to reveal a short explanation.</p>
+  </div>
+  <div class="myths">
+    <button class="myth"><div class="myth-head"><span>“Climate has always changed, so humans can't be the cause.”</span><span class="symbol">+</span></div><div class="myth-answer">Climate has changed naturally in the past, but that does not explain today's warming. NASA notes that the current warming trend is clearly linked to human activities, particularly fossil-fuel burning and increased greenhouse gases.</div></button>
+    <button class="myth"><div class="myth-head"><span>“The greenhouse effect is bad.”</span><span class="symbol">+</span></div><div class="myth-answer">The natural greenhouse effect is essential for life. The issue is the human-driven strengthening of that effect as greenhouse gas concentrations increase.</div></button>
+    <button class="myth"><div class="myth-head"><span>“Weather and climate mean the same thing.”</span><span class="symbol">+</span></div><div class="myth-answer">Weather describes short-term conditions. Climate describes long-term patterns and averages. A cold day does not by itself disprove long-term warming.</div></button>
+    <button class="myth"><div class="myth-head"><span>“Sustainability only means recycling.”</span><span class="symbol">+</span></div><div class="myth-answer">Sustainable development is broader. The UN describes it as meeting present needs without compromising future generations, while balancing economic, social and environmental considerations.</div></button>
+  </div>
+</section>
+
+<section class="section quiz" id="quiz">
+  <div class="heading">
+    <div><div class="label">06 / TEST YOURSELF</div><h2>Ready to<br><span>check?</span></h2></div>
+    <p>Five quick questions. Choose an answer and learn from the explanation.</p>
+  </div>
+  <div class="quiz-box">
+    <div id="quizMain">
+      <div class="quiz-meta" id="quizMeta">Question 1 of 5</div>
+      <div class="question" id="question"></div>
+      <div class="answers" id="answers"></div>
+      <div class="quiz-feedback" id="feedback"></div>
+      <button class="next" id="next">Next question →</button>
+    </div>
+    <div class="score" id="score"><strong id="scoreNumber">0/5</strong><div id="scoreText"></div><button class="next" id="restart" style="display:inline-block;margin-top:15px">Try again</button></div>
+  </div>
+</section>
+
+<section class="section sources">
+  <div class="heading">
+    <div><div class="label">07 / GO DEEPER</div><h2>Follow the<br><span>evidence.</span></h2></div>
+    <p>This learning page uses public scientific and international sources. Use the original sources for deeper reading and the latest reports.</p>
+  </div>
+  <div class="source-list">
+    <article class="source"><b>NASA Science</b><p>Definitions, evidence, causes and the greenhouse effect.</p><a href="https://science.nasa.gov/climate-change/" target="_blank">Explore NASA Climate →</a></article>
+    <article class="source"><b>IPCC</b><p>Assessment reports synthesising scientific knowledge on climate change, impacts and mitigation.</p><a href="https://www.ipcc.ch/synthesis-report/" target="_blank">Read IPCC AR6 Synthesis →</a></article>
+    <article class="source"><b>United Nations</b><p>Sustainable development, responsible consumption and climate action.</p><a href="https://www.un.org/sustainabledevelopment/development-goals/" target="_blank">Explore the SDGs →</a></article>
+  </div>
+</section>
+
+<footer><span>RE:EARTH • CLIMATE CHANGE & ENVIRONMENTAL SUSTAINABILITY</span><span>FSC0634 • LEARNING HUB</span></footer>
+
+<script>
+const menu=document.getElementById('menu'),nav=document.getElementById('nav');
+menu.onclick=()=>nav.classList.toggle('open');
+document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>nav.classList.remove('open'));
+
+const slider=document.getElementById('slider'),temp=document.getElementById('temp'),slideTitle=document.getElementById('slideTitle'),slideText=document.getElementById('slideText');
+function updateSlider(){
+ const v=Number(slider.value); temp.textContent=`+${v.toFixed(1)}°C`;
+ const data=v<.8?["Reference zone","This is a simplified reference point for the visualization."]:v<1.5?["Already changing","Around one degree of warming, observations already show widespread changes across climate and natural systems."]:v<2.5?["Higher risks","As warming increases, risks to people and ecosystems generally become larger and more widespread."]:v<3.5?["Much greater pressure","Greater warming increases the likelihood and severity of many climate-related hazards and losses."]:["Extreme warming scenario","This simplified setting represents a much warmer world with substantially higher risks. It is not a forecast."];
+ slideTitle.textContent=data[0];slideText.textContent=data[1];
+}
+slider.oninput=updateSlider;updateSlider();
+
+const impactData={
+ ecosystems:["Ecosystems","Warming and changing climate conditions can alter habitats, species ranges and the timing of ecological events. Multiple stresses can compound pressure on biodiversity.",["Habitat shifts","Species may move, adapt or face increased pressure.","Wildfire & drought","Heat and water stress can affect vegetation and wildlife.","Ocean change","Marine ecosystems respond to warming and changing ocean conditions."]],
+ water:["Water","Climate change can alter rainfall, evaporation, snow and ice, increasing water stress in some regions while intensifying heavy rainfall and flooding in others.",["Availability","Some regions face greater water scarcity and competition for water.","Flooding","Heavier rainfall can increase flood risks in vulnerable areas.","Quality","Extreme events can affect water quality and infrastructure."]],
+ food:["Food","Food systems depend on stable climate conditions, water, soil, ecosystems and infrastructure. Climate risks can therefore move through the whole supply chain.",["Crops","Heat and rainfall changes can affect growing conditions.","Livestock","Heat stress and water availability can affect animal systems.","Supply chains","Extreme events can disrupt production, storage and transport."]],
+ cities:["Cities","Urban areas can amplify heat exposure because buildings and paved surfaces retain heat. Climate hazards can also challenge drainage, transport and energy systems.",["Heat","Urban heat can increase exposure during hot periods.","Infrastructure","Floods, storms and heat can disrupt critical systems.","Planning","Resilience depends on risk-aware design and adaptation."]],
+ health:["Health","Climate-related hazards can affect health through heat, air quality, infectious disease patterns, food and water systems, and disruption of essential services.",["Heat","Extreme heat can increase health risks, especially for vulnerable people.","Air & smoke","Wildfire smoke and air pollution can affect respiratory health.","Services","Disasters can disrupt healthcare and other essential services."]]
+};
+function showImpact(key){
+ const d=impactData[key];document.getElementById('impactTitle').textContent=d[0];document.getElementById('impactDesc').textContent=d[1];
+ document.getElementById('impactPoints').innerHTML=d[2].map(x=>`<div class="point"><b>${x[0]}</b>${x[1]}</div>`).join('');
+ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.impact===key));
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>showImpact(t.dataset.impact));showImpact('ecosystems');
+
+document.querySelectorAll('.myth').forEach(m=>m.onclick=()=>m.classList.toggle('open'));
+
+const qs=[
+ ["What is the greenhouse effect?","A natural process that traps some heat near Earth's surface","A process that blocks all sunlight","Only pollution from cars","A weather forecast",0,"The greenhouse effect is a natural heat-trapping process that helps keep Earth warm."],
+ ["Which activity is a major source of human-caused CO₂ emissions?","Planting trees","Burning fossil fuels","Recycling paper","Cloud formation",1,"Burning coal, oil and gas increases atmospheric CO₂."],
+ ["Which statement best describes climate?","One afternoon's temperature","Today's rain","Long-term patterns of weather","A single storm",2,"Climate refers to long-term patterns, while weather describes short-term conditions."],
+ ["What does sustainable development aim to do?","Use all resources as quickly as possible","Meet present needs without compromising future generations","Stop all economic activity","Focus only on recycling",1,"The UN definition emphasises present needs, future generations and an integrated approach."],
+ ["Why is human influence on current warming considered established?","Because of one thermometer","Because scientists use many independent lines of evidence","Because every year is hotter than the previous year","Because climate never changed before",1,"Observations, measurements, physical understanding and multiple lines of evidence support the conclusion."]
+];
+let qi=0,score=0,answered=false;
+const qEl=document.getElementById('question'),aEl=document.getElementById('answers'),fEl=document.getElementById('feedback'),nEl=document.getElementById('next');
+function loadQ(){
+ answered=false;nEl.style.display='none';fEl.textContent='';document.getElementById('quizMeta').textContent=`Question ${qi+1} of ${qs.length}`;
+ const q=qs[qi];qEl.textContent=q[0];aEl.innerHTML='';
+ q.slice(1,5).forEach((ans,i)=>{const b=document.createElement('button');b.className='answer';b.textContent=ans;b.onclick=()=>answer(i,b);aEl.appendChild(b)});
+}
+function answer(i,b){
+ if(answered)return;answered=true;const q=qs[qi],buttons=[...aEl.children];
+ buttons.forEach((x,j)=>{if(j===q[5])x.classList.add('correct');if(j===i&&i!==q[5])x.classList.add('wrong')});
+ if(i===q[5]){score++;fEl.textContent="Correct ✓ "+q[6]}else fEl.textContent="Not quite. "+q[6];
+ nEl.style.display='inline-block';nEl.textContent=qi===qs.length-1?'See result →':'Next question →';
+}
+nEl.onclick=()=>{if(qi<qs.length-1){qi++;loadQ()}else{document.getElementById('quizMain').style.display='none';document.getElementById('score').style.display='block';document.getElementById('scoreNumber').textContent=`${score}/${qs.length}`;document.getElementById('scoreText').textContent=score>=4?'Strong understanding — nice work.':score>=3?'Good start — review the sections you missed.':'Keep exploring — the science section is a good place to revisit.'}};
+document.getElementById('restart').onclick=()=>{qi=0;score=0;document.getElementById('score').style.display='none';document.getElementById('quizMain').style.display='block';loadQ()};
+loadQ();
+</script>
+</body>
+</html>
