@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RE:EARTH — Climate Map</title>
+<meta name="description" content="Interactive global map for exploring temperature and rain conditions at any location.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--green:#102b20;--green2:#1b4934;--lime:#c8ef79;--paper:#f5f3ea;--muted:#6d7972;--line:#d9ddd5;--orange:#ff6a25;--blue:#4da6ff}
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#10251d;background:var(--paper)}
+body{overflow:hidden}.app{height:100vh;display:grid;grid-template-columns:360px 1fr}
+.sidebar{background:var(--paper);height:100vh;overflow:auto;padding:25px 24px;z-index:1000}
+.brand{display:flex;align-items:center;gap:10px;color:var(--green);font-weight:800;letter-spacing:.1em;font-size:16px;margin-bottom:32px}.brandmark{height:31px;width:31px;border:1px solid var(--green);border-radius:50%;display:grid;place-items:center}
+.back{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);display:inline-block;margin-bottom:30px}.back:hover{color:var(--green)}
+.kicker{font-size:10px;letter-spacing:.16em;color:#79935e;font-weight:800}.sidebar h1{font-size:43px;line-height:.9;letter-spacing:-.055em;margin:10px 0 15px}.sidebar h1 em{font-family:Georgia,serif;font-weight:400}.intro{font-size:13px;color:var(--muted);margin-bottom:24px}
+.search{display:flex;gap:7px;margin:15px 0}.search input{min-width:0;flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px;font-size:13px;outline:none}.search input:focus{border-color:#78935d}.search button,.locate{border:0;border-radius:12px;background:var(--green);color:#fff;padding:0 15px;cursor:pointer;font-weight:800}.locate{width:100%;padding:11px;margin-bottom:17px}.locate:hover,.search button:hover{background:var(--green2)}
+.status{font-size:11px;color:var(--muted);min-height:18px;margin:5px 0 12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:12px}.place{display:flex;justify-content:space-between;gap:15px;align-items:start}.place h2{font-size:19px;margin:0;line-height:1.1}.coords{font-size:10px;color:var(--muted);margin-top:5px}.current{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}.metric{background:#f1f2eb;border-radius:14px;padding:14px}.metric span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em}.metric strong{font-size:31px;letter-spacing:-.04em;display:block;margin-top:3px}.metric.rain strong{color:#3487bd}
+.weather-icon{font-size:30px}.updated{font-size:10px;color:var(--muted);margin-top:13px}
+.forecast{margin-top:18px}.forecast h3{font-size:12px;text-transform:uppercase;letter-spacing:.12em;margin:0 0 9px}.day{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;border-top:1px solid var(--line);padding:10px 0;font-size:11px}.day .date{font-weight:800}.day .rain{color:#3487bd}.legend{margin-top:18px;font-size:10px;color:var(--muted);line-height:1.5}.legend b{color:var(--green)}
+.map-wrap{position:relative;min-width:0}.map{height:100%;width:100%;background:#dfe8df}.map-controls{position:absolute;z-index:500;top:20px;left:20px;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-radius:14px;padding:7px;display:flex;gap:5px;box-shadow:0 7px 30px #10251d18}.layer{border:0;background:transparent;padding:9px 13px;border-radius:10px;font-size:11px;font-weight:800;cursor:pointer;color:var(--muted)}.layer.active{background:var(--green);color:white}
+.map-tip{position:absolute;right:20px;bottom:20px;z-index:500;background:rgba(16,43,32,.93);color:#fff;border-radius:14px;padding:12px 15px;font-size:11px;max-width:250px}.map-tip b{color:var(--lime)}
+.leaflet-control-zoom a{color:var(--green)!important}.leaflet-popup-content-wrapper{border-radius:14px}.popup{min-width:190px}.popup .pname{font-weight:800;font-size:15px}.popup .pvalue{font-size:12px;color:#66746c;margin-top:5px}.popup .pvalue strong{color:#10251d}.loader{display:inline-block;width:11px;height:11px;border:2px solid #bfc7c1;border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:800px){.app{grid-template-columns:1fr}.sidebar{position:absolute;left:0;right:0;bottom:0;height:auto;max-height:58vh;border-radius:22px 22px 0 0;box-shadow:0 -8px 35px #10251d20;padding:18px 18px 22px}.brand,.back,.sidebar .intro{display:none}.sidebar h1{font-size:31px;margin:4px 0 10px}.map{height:100vh}.map-controls{top:12px;left:12px}.map-tip{right:12px;bottom:calc(58vh + 12px)}} 
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <a class="back" href="index_connected.html">← Back to RE:EARTH</a>
+  <div class="brand"><span class="brandmark">↻</span> RE:<b>EARTH</b></div>
+  <div class="kicker">CLIMATE DATA EXPLORER</div>
+  <h1>Weather,<br><em>wherever you are.</em></h1>
+  <p class="intro">Click anywhere on the map or search for a place to explore current temperature, rain and the upcoming forecast.</p>
+
+  <div class="search">
+    <input id="search" placeholder="Search city or location…" autocomplete="off">
+    <button id="searchBtn">→</button>
+  </div>
+  <button class="locate" id="locate">◎ Use my location</button>
+  <div class="status" id="status"></div>
+
+  <div class="card">
+    <div class="place"><div><h2 id="place">Select a location</h2><div class="coords" id="coords">Click the map to begin</div></div><div class="weather-icon" id="icon">🌍</div></div>
+    <div class="current">
+      <div class="metric"><span>Temperature</span><strong id="temp">—</strong></div>
+      <div class="metric rain"><span>Rain</span><strong id="rain">—</strong></div>
+      <div class="metric"><span>Feels like</span><strong id="feels">—</strong></div>
+      <div class="metric"><span>Humidity</span><strong id="humidity">—</strong></div>
+    </div>
+    <div class="updated" id="updated">Weather data will appear here.</div>
+  </div>
+
+  <div class="card forecast">
+    <h3>7-day outlook</h3>
+    <div id="forecast"><div class="day">Select a location to load the forecast.</div></div>
+  </div>
+  <div class="legend"><b>Data:</b> Open-Meteo weather models. Current conditions and forecasts are model-based estimates. Rain is shown in millimetres (mm). Temperature is °C.</div>
+</aside>
+
+<main class="map-wrap">
+  <div class="map-controls">
+    <button class="layer active" data-layer="standard">Map</button>
+    <button class="layer" data-layer="satellite">Satellite</button>
+  </div>
+  <div id="map" class="map"></div>
+  <div class="map-tip">🌡️ <b>Click anywhere</b> on the map to see weather for that exact point.</div>
+</main>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map=L.map('map',{worldCopyJump:true,minZoom:2}).setView([20,20],2);
+const standard=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);
+const satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri'});
+document.querySelectorAll('.layer').forEach(b=>b.onclick=()=>{document.querySelectorAll('.layer').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(b.dataset.layer==='satellite'){map.removeLayer(standard);satellite.addTo(map)}else{map.removeLayer(satellite);standard.addTo(map)}});
+
+let marker=null;
+const statusEl=document.getElementById('status');
+function setStatus(t,load=false){statusEl.innerHTML=load?`<span class="loader"></span> ${t}`:t}
+function weatherIcon(code){
+ if(code===0)return'☀️';if([1,2].includes(code))return'🌤️';if(code===3)return'☁️';if([45,48].includes(code))return'🌫️';
+ if([51,53,55,56,57].includes(code))return'🌦️';if([61,63,65,66,67,80,81,82].includes(code))return'🌧️';
+ if([71,73,75,77,85,86].includes(code))return'🌨️';if([95,96,99].includes(code))return'⛈️';return'🌍';
+}
+function weatherName(code){
+ const names={0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Rime fog',51:'Light drizzle',53:'Drizzle',55:'Dense drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',80:'Rain showers',81:'Rain showers',82:'Heavy showers',95:'Thunderstorm'};
+ return names[code]||'Mixed conditions';
+}
+function fmtDate(d){return new Date(d+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})}
+
+async function getWeather(lat,lon,name){
+ setStatus('Loading weather…',true);
+ document.getElementById('place').textContent=name||'Selected location';
+ document.getElementById('coords').textContent=`${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+ const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,rain,precipitation,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,rain_sum,precipitation_probability_max&forecast_days=7&timezone=auto`;
+ try{
+  const r=await fetch(url);if(!r.ok)throw Error('Weather request failed');const d=await r.json();
+  const c=d.current;
+  document.getElementById('temp').textContent=`${Math.round(c.temperature_2m)}°`;
+  document.getElementById('rain').textContent=`${Number(c.rain||0).toFixed(1)} mm`;
+  document.getElementById('feels').textContent=`${Math.round(c.apparent_temperature)}°`;
+  document.getElementById('humidity').textContent=`${Math.round(c.relative_humidity_2m)}%`;
+  document.getElementById('icon').textContent=weatherIcon(c.weather_code);
+  document.getElementById('updated').textContent=`${weatherName(c.weather_code)} • ${d.timezone_abbreviation||d.timezone}`;
+  document.getElementById('forecast').innerHTML=d.daily.time.map((day,i)=>`<div class="day"><span class="date">${fmtDate(day)}</span><span>${Math.round(d.daily.temperature_2m_min[i])}° / ${Math.round(d.daily.temperature_2m_max[i])}°</span><span class="rain">${Math.round(d.daily.precipitation_probability_max[i]||0)}% rain</span></div>`).join('');
+  setStatus('Live weather loaded');
+  const popup=`<div class="popup"><div class="pname">${name||'Selected location'}</div><div class="pvalue">${weatherIcon(c.weather_code)} ${weatherName(c.weather_code)}</div><div class="pvalue">Temperature: <strong>${Math.round(c.temperature_2m)}°C</strong></div><div class="pvalue">Rain: <strong>${Number(c.rain||0).toFixed(1)} mm</strong></div></div>`;
+  if(marker)marker.setLatLng([lat,lon]).bindPopup(popup).openPopup();else marker=L.marker([lat,lon]).addTo(map).bindPopup(popup).openPopup();
+ }catch(e){setStatus('Could not load weather. Check your internet connection.');}
+}
+async function reverseGeocode(lat,lon){
+ try{
+  const r=await fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=en&format=json`);
+  if(!r.ok)return `${lat.toFixed(2)}, ${lon.toFixed(2)}`;
+  const d=await r.json(),x=d.results&&d.results[0];
+  return x?[x.name,x.admin1,x.country].filter(Boolean).join(', '):`${lat.toFixed(2)}, ${lon.toFixed(2)}`;
+ }catch{return `${lat.toFixed(2)}, ${lon.toFixed(2)}`}
+}
+map.on('click',async e=>{const name=await reverseGeocode(e.latlng.lat,e.latlng.lng);getWeather(e.latlng.lat,e.latlng.lng,name)});
+
+async function searchPlace(){
+ const q=document.getElementById('search').value.trim();if(!q)return;
+ setStatus('Finding location…',true);
+ try{
+  const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=en&format=json`);
+  const d=await r.json();if(!d.results?.length)throw Error();
+  const x=d.results[0];map.setView([x.latitude,x.longitude],9);getWeather(x.latitude,x.longitude,[x.name,x.admin1,x.country].filter(Boolean).join(', '));
+ }catch{setStatus('Location not found. Try another name.')}
+}
+document.getElementById('searchBtn').onclick=searchPlace;
+document.getElementById('search').addEventListener('keydown',e=>{if(e.key==='Enter')searchPlace()});
+document.getElementById('locate').onclick=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(async p=>{map.setView([p.coords.latitude,p.coords.longitude],10);const n=await reverseGeocode(p.coords.latitude,p.coords.longitude);getWeather(p.coords.latitude,p.coords.longitude,n)},()=>setStatus('Location permission was not granted.')):setStatus('Geolocation is not supported by this browser.');
+
+// Start with a useful global location without claiming it is the user's location.
+getWeather(3.139,101.686,'Kuala Lumpur, Malaysia');
+map.setView([3.139,101.686],5);
+</script>
+</body>
+</html>
